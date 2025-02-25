@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Rapoarte</h2>
+
+    <div class="row">
+        <!-- Raport Săptămânal -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Raport Săptămânal</h5>
+                </div>
+                <div class="card-body">
+                    <form id="weekly-report-form">
+                        <div class="mb-3">
+                            <label for="employee-select" class="form-label">Angajat:</label>
+                            <select class="form-select" id="employee-select" disabled>
+                                {% for employee in employees %}
+                                    {% if employee.user_id == current_user_id %}
+                                    <option value="{{ employee.user_id }}" selected>
+                                        {{ employee.username }}
+                                    </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="employee_id" value="{{ current_user_id }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="week-start" class="form-label">Săptămâna începând cu:</label>
+                            <input type="date" class="form-control" id="week-start" name="start_date" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Generează Raport Săpt</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Raport Lunar -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Raport Lunar</h5>
+                </div>
+                <div class="card-body">
+                    <form id="monthly-report-form">
+                        <div class="mb-3">
+                            <label for="employee-select-monthly" class="form-label">Angajat:</label>
+                            <select class="form-select" id="employee-select-monthly" disabled>
+                                {% for employee in employees %}
+                                    {% if employee.user_id == current_user_id %}
+                                    <option value="{{ employee.user_id }}" selected>
+                                        {{ employee.username }}
+                                    </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="employee_id" value="{{ current_user_id }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="month-select" class="form-label">Luna:</label>
+                            <input type="text" class="form-control" id="month-select" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Generează Raport Lunar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Raport pe Client -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Raport pe Client</h5>
+                </div>
+                <div class="card-body">
+                    <form id="client-report-form">
+                        <div class="mb-3">
+                            <label for="employee-select-client" class="form-label">Angajat:</label>
+                            <select class="form-select" id="employee-select-client" disabled>
+                                {% for employee in employees %}
+                                    {% if employee.user_id == current_user_id %}
+                                    <option value="{{ employee.user_id }}" selected>
+                                        {{ employee.username }}
+                                    </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="employee_id" value="{{ current_user_id }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="client-select" class="form-label">Client:</label>
+                            <select class="form-select" id="client-select" name="client" required>
+                                <option value="">Selectează client</option>
+                                {% for client in clients %}
+                                <option value="{{ client }}">{{ client }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Generează Raport Client</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Raport pe Proiect -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Raport pe Proiect</h5>
+                </div>
+                <div class="card-body">
+                    <form id="project-report-form">
+                        <div class="mb-3">
+                            <label for="employee-select-project" class="form-label">Angajat:</label>
+                            <select class="form-select" id="employee-select-project" disabled>
+                                {% for employee in employees %}
+                                    {% if employee.user_id == current_user_id %}
+                                    <option value="{{ employee.user_id }}" selected>
+                                        {{ employee.username }}
+                                    </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="employee_id" value="{{ current_user_id }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="project-select" class="form-label">Proiect:</label>
+                            <select class="form-select" id="project-select" name="project" required>
+                                <option value="">Selectează proiect</option>
+                                {% for project in projects %}
+                                <option value="{{ project }}">{{ project }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Generează Raport Proiect</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rezultate Raport -->
+    <div class="row mt-4" id="report-results" style="display: none;">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Rezultate Raport</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Statistici generale -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6 class="card-subtitle mb-2 text-muted">Total Ore Lucrate</h6>
+                                    <h3 class="card-title" id="total-hours">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6 class="card-subtitle mb-2 text-muted">Zile Lucrate</h6>
+                                    <h3 class="card-title" id="working-days">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6 class="card-subtitle mb-2 text-muted">Proiecte Active</h6>
+                                    <h3 class="card-title" id="unique-projects">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabele cu detalii -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Activități</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="activities-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Client</th>
+                                            <th>Proiect</th>
+                                            <th>Tip Activitate</th>
+                                            <th>Ore</th>
+                                            <th>Realizări</th>
+                                            <th>Provocări</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>Ore pe Client</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="clients-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Client</th>
+                                            <th>Ore</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Ore pe Proiect</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="projects-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Proiect</th>
+                                            <th>Ore</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Configurație comună pentru Flatpickr
+    const commonConfig = {
+        locale: "ro",
+        disableMobile: "true",
+        theme: "material_blue",
+        animate: true,
+        allowInput: true,
+        time_24hr: true
+    };
+
+    // Inițializăm Flatpickr pentru raportul săptămânal
+    flatpickr("#week-start", {
+        ...commonConfig,
+        dateFormat: "Y-m-d",
+        defaultDate: "today",
+        weekNumbers: true,
+        altInput: true,
+        altFormat: "j F Y",
+        onChange: function(selectedDates, dateStr) {
+            // Ajustăm data la începutul săptămânii (luni)
+            let date = selectedDates[0];
+            let day = date.getDay();
+            let diff = date.getDate() - day + (day === 0 ? -6 : 1);
+            date.setDate(diff);
+            this.setDate(date);
+        }
+    });
+
+    // Inițializăm Flatpickr pentru raportul lunar
+    flatpickr("#month-select", {
+        ...commonConfig,
+        plugins: [
+            new monthSelectPlugin({
+                shorthand: true,
+                dateFormat: "Y-m",
+                altFormat: "F Y",
+                theme: "material_blue"
+            })
+        ],
+        altInput: true,
+        altFormat: "F Y"
+    });
+
+    function displayReport(data) {
+        // Actualizăm statisticile generale
+        $('#total-hours').text(data.total_hours);
+        $('#working-days').text(data.working_days);
+        $('#unique-projects').text(data.unique_projects);
+        
+        // Populăm tabelul de activități
+        var activitiesTable = $('#activities-table').DataTable();
+        activitiesTable.clear();
+        data.activities.forEach(function(activity) {
+            activitiesTable.row.add([
+                activity.date,
+                activity.client,
+                activity.project,
+                activity.activity_type,
+                activity.hours,
+                activity.achievements,
+                activity.challenges
+            ]);
+        });
+        activitiesTable.draw();
+
+        // Populăm tabelul de clienți
+        var clientsTable = $('#clients-table').DataTable();
+        clientsTable.clear();
+        Object.entries(data.clients).forEach(function([client, hours]) {
+            clientsTable.row.add([client, hours]);
+        });
+        clientsTable.draw();
+
+        // Populăm tabelul de proiecte
+        var projectsTable = $('#projects-table').DataTable();
+        projectsTable.clear();
+        Object.entries(data.projects).forEach(function([project, hours]) {
+            projectsTable.row.add([project, hours]);
+        });
+        projectsTable.draw();
+
+        $('#report-results').show();
+    }
+
+    // Inițializare DataTables
+    $('#activities-table').DataTable({
+        "order": [[ 0, "desc" ]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Romanian.json"
+        }
+    });
+    $('#clients-table').DataTable({
+        "order": [[ 1, "desc" ]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Romanian.json"
+        }
+    });
+    $('#projects-table').DataTable({
+        "order": [[ 1, "desc" ]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Romanian.json"
+        }
+    });
+
+    // Handler pentru raportul săptămânal
+    $('#weekly-report-form').on('submit', function(e) {
+        e.preventDefault();
+        $.post('/api/report/weekly', $(this).serialize(), displayReport);
+    });
+
+    // Handler pentru raportul lunar
+    $('#monthly-report-form').on('submit', function(e) {
+        e.preventDefault();
+        var monthYear = $('#month-select').val();
+        $.post('/api/report/monthly', {
+            month: monthYear
+        }, displayReport);
+    });
+
+    // Handler pentru raportul pe client
+    $('#client-report-form').on('submit', function(e) {
+        e.preventDefault();
+        $.post('/api/report/client', $(this).serialize(), displayReport);
+    });
+
+    // Handler pentru raportul pe proiect
+    $('#project-report-form').on('submit', function(e) {
+        e.preventDefault();
+        $.post('/api/report/project', $(this).serialize(), displayReport);
+    });
+});
+</script>
+{% endblock %}

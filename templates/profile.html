@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Profilul Meu</h1>
+    
+    <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">General</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">Securitate</button>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="profileTabsContent">
+        <!-- Tab General -->
+        <div class="tab-pane fade show active" id="general" role="tabpanel">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Informații Generale</h5>
+                    <p class="text-muted">Actualizează-ți informațiile personale aici.</p>
+                    
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                            <span class="display-4 text-muted">{{ current_user.username[0]|upper }}</span>
+                        </div>
+                        <div class="ms-3">
+                            <button class="btn btn-outline-secondary btn-sm">Schimbă poza de profil</button>
+                        </div>
+                    </div>
+                    
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Nume</label>
+                            <input type="text" class="form-control" value="{{ current_user.username }}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" value="{{ current_user.email }}" readonly>
+                        </div>
+                        <button type="submit" class="btn btn-dark">Salvează Modificările</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab Securitate -->
+        <div class="tab-pane fade" id="security" role="tabpanel">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Securitate</h5>
+                    <p class="text-muted">Gestionează-ți parola și setările de securitate.</p>
+                    
+                    <form method="POST" action="{{ url_for('update_password') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Parola Curentă</label>
+                            <input type="password" class="form-control" name="current_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Parola Nouă</label>
+                            <input type="password" class="form-control" name="new_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Confirmă Parola Nouă</label>
+                            <input type="password" class="form-control" name="confirm_password" required>
+                        </div>
+                        <button type="submit" class="btn btn-dark">Schimbă Parola</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card border-danger">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">Ștergere Cont</h5>
+                    <p class="text-muted">Odată șters, contul tău nu mai poate fi recuperat.</p>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                        Șterge Contul
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pentru ștergerea contului -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmare Ștergere Cont</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Ești sigur că vrei să îți ștergi contul? Această acțiune este ireversibilă.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>
+                <form method="POST" action="{{ url_for('delete_account') }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Șterge Contul</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block title %}Acasă - Activity Tracker{% endblock %}
+
+{% block styles %}
+<style>
+    .stat-card {
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-icon {
+        font-size: 2rem;
+        color: #0d6efd;
+    }
+    .stat-title {
+        color: #6c757d;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    .stat-subtitle {
+        color: #6c757d;
+        font-size: 0.8rem;
+    }
+    .trend-up {
+        color: #198754;
+    }
+    .trend-down {
+        color: #dc3545;
+    }
+    .nav-tabs {
+        border-bottom: 2px solid #dee2e6;
+    }
+    .nav-tabs .nav-link {
+        border: none;
+        color: #6c757d;
+        padding: 0.8rem 1.5rem;
+        font-weight: 500;
+    }
+    .nav-tabs .nav-link.active {
+        color: #0d6efd;
+        border-bottom: 2px solid #0d6efd;
+        margin-bottom: -2px;
+    }
+    .activities-table th {
+        font-weight: 500;
+        color: #495057;
+    }
+    .activities-table td {
+        vertical-align: middle;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Bine ai venit, {{ username }}!</h2>
+        <div class="btn-group">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="exportButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Export Date
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="exportButton">
+                <li><a class="dropdown-item" href="{{ url_for('export_data', type='csv') }}">Export CSV</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('export_data', type='excel') }}">Export Excel</a></li>
+            </ul>
+            <a href="{{ url_for('add_activity') }}" class="btn btn-primary ms-2">Adaugă Activitate</a>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Total Ore Card -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Ore Lucrate</h5>
+                    <h2 class="card-text">{{ current_week_hours }} ore</h2>
+                    <p class="card-text">
+                        {% if trend_direction == 'up' %}
+                        <span class="text-success">+{{ percentage_change }}%</span>
+                        {% else %}
+                        <span class="text-danger">-{{ percentage_change }}%</span>
+                        {% endif %}
+                        față de săptămâna trecută
+                        ({{ last_week_hours }} ore)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zile Lucrate Card -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Zile Lucrate</h5>
+                    <h2 class="card-text">{{ working_days }}</h2>
+                    <p class="card-text">în această săptămână</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Proiecte Active Card -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Proiecte Active</h5>
+                    <h2 class="card-text">{{ active_projects }}</h2>
+                    <p class="card-text">în desfășurare</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clienți Activi Card -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Clienți Activi</h5>
+                    <h2 class="card-text">{{ active_clients }}</h2>
+                    <p class="card-text">în această lună</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Activități Recente</h3>
+        </div>
+        <div class="card-body">
+            {% if recent_activities %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Client</th>
+                            <th>Proiect</th>
+                            <th>Tip Activitate</th>
+                            <th>Ore</th>
+                            <th>Acțiuni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activity in recent_activities %}
+                        <tr>
+                            <td>{{ activity.date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ activity.client }}</td>
+                            <td>{{ activity.project }}</td>
+                            <td>{{ activity.activity_type }}</td>
+                            <td>{{ activity.hours }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info" onclick="viewActivity({{ activity.id }})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteActivity({{ activity.id }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-cloud fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Nu există activități înregistrate</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal pentru vizualizare activitate -->
+<div class="modal fade" id="viewActivityModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalii Activitate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="activityDetails"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function viewActivity(id) {
+        fetch(`/api/activity/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                const details = `
+                    <div class="mb-3">
+                        <strong>Data:</strong> ${data.date}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Client:</strong> ${data.client}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Proiect:</strong> ${data.project}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Tip Activitate:</strong> ${data.activity_type}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Ore:</strong> ${data.hours}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Realizări:</strong><br>
+                        ${data.achievements}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Provocări:</strong><br>
+                        ${data.challenges}
+                    </div>
+                `;
+                
+                document.getElementById('activityDetails').innerHTML = details;
+                new bootstrap.Modal(document.getElementById('viewActivityModal')).show();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('A apărut o eroare la încărcarea detaliilor activității');
+            });
+    }
+
+    function deleteActivity(id) {
+        if (confirm('Sigur doriți să ștergeți această activitate?')) {
+            fetch(`/api/activity/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                alert(data.message);
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('A apărut o eroare la ștergerea activității');
+            });
+        }
+    }
+</script>
+{% endblock %}

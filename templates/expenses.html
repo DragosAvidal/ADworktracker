@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Cheltuieli</h2>
+        <div class="btn-group">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="exportButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Export Date
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="exportButton">
+                <li><a class="dropdown-item" href="{{ url_for('export_expenses', type='csv') }}">Export CSV</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('export_expenses', type='excel') }}">Export Excel</a></li>
+            </ul>
+            <button type="button" class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+                Adaugă Cheltuială
+            </button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Proiect</th>
+                            <th>Categorie</th>
+                            <th>Descriere</th>
+                            <th>Sumă</th>
+                            <th>Acțiuni</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expensesTableBody">
+                        {% for expense in expenses %}
+                        <tr>
+                            <td>{{ expense.date }}</td>
+                            <td>{{ expense.project }}</td>
+                            <td>{{ expense.category }}</td>
+                            <td>{{ expense.description }}</td>
+                            <td>{{ expense.amount }} RON</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteExpense({{ expense.id }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pentru adăugare cheltuială -->
+<div class="modal fade" id="addExpenseModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adaugă Cheltuială</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addExpenseForm" action="{{ url_for('add_expense') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Data</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="project" class="form-label">Proiect</label>
+                        <input type="text" class="form-control" id="project" name="project" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Categorie</label>
+                        <select class="form-control" id="category" name="category" required>
+                            <option value="">Selectează categoria</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Echipament">Echipament</option>
+                            <option value="Materiale">Materiale</option>
+                            <option value="Servicii">Servicii</option>
+                            <option value="Altele">Altele</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Descriere</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Sumă (RON)</label>
+                        <input type="number" step="0.01" class="form-control" id="amount" name="amount" required>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>
+                        <button type="submit" class="btn btn-primary">Salvează</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function deleteExpense(id) {
+        if (confirm('Sigur doriți să ștergeți această cheltuială?')) {
+            fetch(`/api/expenses/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                alert(data.message);
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('A apărut o eroare la ștergerea cheltuielii');
+            });
+        }
+    }
+
+    document.getElementById('addExpenseForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        
+        fetch('/api/expenses/add', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.error || 'A apărut o eroare la salvarea cheltuielii');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('A apărut o eroare la salvarea cheltuielii');
+        });
+    });
+</script>
+{% endblock %}

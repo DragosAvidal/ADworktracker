@@ -1,0 +1,74 @@
+/* 
+ * Employee Activity Tracker Styles
+ * Main stylesheet for the application
+ * Contains styles for layout, forms, calendar, and components
+ */
+
+/* Main container layout */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Activity card component styles */
+.activity-card {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Form container styles */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Flatpickr calendar customization */
+/* Stiluri pentru calendar */
+.flatpickr-calendar {
+    box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+    border-radius: 8px;
+}
+
+/* Selected day styling */
+.flatpickr-day.selected {
+    background: #1976D2;
+    border-color: #1976D2;
+}
+
+/* Today's date highlight */
+.flatpickr-day.today {
+    border-color: #1976D2;
+}
+
+/* Hover effect for calendar days */
+.flatpickr-day:hover {
+    background: #E3F2FD;
+}
+
+/* Calendar input styling */
+.flatpickr-input {
+    cursor: pointer;
+}
+
+/* Modal component styles */
+.modal-lg {
+    max-width: 800px;
+}
+
+/* Table styles */
+.table-responsive {
+    margin-top: 1rem;
+}
+
+/* Table header styles */
+.table th {
+    background-color: #f8f9fa;
+}
+
+/* Modal body styles */
+.modal-body {
+    padding: 1.5rem;
+}

@@ -1,0 +1,141 @@
+<!--
+    Add Activity Template - Employee Activity Tracker
+    
+    This template provides a form for adding new activities.
+    Features:
+    - Date picker integration
+    - Dropdown selections for client, project, and activity type
+    - Custom input fields for new entries not in dropdowns
+    - Text areas for achievements and challenges
+    - Hours worked input
+-->
+
+{% extends "base.html" %}
+
+{% block title %}Adaugă Activitate - Activity Tracker{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Adaugă Activitate Nouă</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('add_activity') }}">
+                        <div class="mb-3">
+                            <label for="employee_id" class="form-label">Angajat</label>
+                            <input type="text" class="form-control" id="employee_id" value="{{ current_username }}" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Data</label>
+                            <input type="date" class="form-control" id="date" name="date" 
+                                   value="{{ today }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="client" class="form-label">Client</label>
+                            <input type="text" class="form-control" id="client" name="client" 
+                                   list="client-list" required>
+                            <datalist id="client-list">
+                                {% for client in clients %}
+                                <option value="{{ client }}">
+                                {% endfor %}
+                            </datalist>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="project" class="form-label">Proiect</label>
+                            <input type="text" class="form-control" id="project" name="project" 
+                                   list="project-list" required>
+                            <datalist id="project-list">
+                                {% for project in projects %}
+                                <option value="{{ project }}">
+                                {% endfor %}
+                            </datalist>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="activity_type" class="form-label">Tip Activitate</label>
+                            <select class="form-select" id="activity_type" name="activity_type" required>
+                                <option value="">Selectează tipul activității</option>
+                                <option value="Development">Development</option>
+                                <option value="Testing">Testing</option>
+                                <option value="Documentation">Documentation</option>
+                                <option value="Meeting">Meeting</option>
+                                <option value="Analysis">Analysis</option>
+                                <option value="Design">Design</option>
+                                <option value="Support">Support</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="achievements" class="form-label">Realizări</label>
+                            <textarea class="form-control" id="achievements" name="achievements" 
+                                      rows="3" required></textarea>
+                            <div class="form-text">Descrie ce ai realizat în această activitate.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="challenges" class="form-label">Provocări</label>
+                            <textarea class="form-control" id="challenges" name="challenges" 
+                                      rows="3" required></textarea>
+                            <div class="form-text">Descrie provocările întâmpinate și cum le-ai abordat.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="hours" class="form-label">Ore Lucrate</label>
+                            <input type="number" class="form-control" id="hours" name="hours" 
+                                   step="0.5" min="0.5" required>
+                            <div class="form-text">Introduceți numărul de ore lucrate (minim 0.5 ore).</div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                Salvează Activitatea
+                            </button>
+                            <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                                Anulează
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Inițializăm Flatpickr pentru câmpul de dată
+    flatpickr("#date", {
+        locale: "ro",
+        dateFormat: "Y-m-d",
+        defaultDate: "today",
+        disableMobile: "true",
+        theme: "material_blue",
+        animate: true,
+        weekNumbers: true,
+        allowInput: true,
+        altInput: true,
+        altFormat: "j F Y",
+        time_24hr: true
+    });
+
+    // Setăm data curentă ca valoare implicită pentru câmpul de dată
+    if (!$('#date').val()) {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        today = yyyy + '-' + mm + '-' + dd;
+        $('#date').val(today);
+    }
+});
+</script>
+{% endblock %}

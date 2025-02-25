@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Administrator{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Dashboard Administrator</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Lista Angajați</h5>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary">
+                        <i class="bi bi-person-plus"></i> Adaugă Angajat
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nume Utilizator</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Cost/Oră</th>
+                                    <th>Acțiuni</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for employee in employees %}
+                                <tr>
+                                    <td>{{ employee.username }}</td>
+                                    <td>{{ employee.email }}</td>
+                                    <td>
+                                        <span class="badge {% if employee.status == 'active' %}bg-success{% else %}bg-warning{% endif %}">
+                                            {{ employee.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ employee.cost_per_hour }} RON</td>
+                                    <td>
+                                        <a href="{{ url_for('view_employee', user_id=employee.user_id) }}" 
+                                           class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i> Vezi Detalii
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
