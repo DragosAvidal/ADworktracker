@@ -1,0 +1,17 @@
+{
+    "1": {
+        "username": "Dragos Avidal",
+        "email": "draosavidal@gmail.com",
+        "password_hash": "pbkdf2:sha256:260000$9pgjNEumjxPa6Yh7$2f77f52eda64d231e62e99ccbc84c364b256757771af604d51777871a0ba2cb8"
+    },
+    "2": {
+        "username": "TestDragos",
+        "email": "dragosavidal@gmail.com",
+        "password_hash": "pbkdf2:sha256:260000$uB3In4kr09rWIlvv$4d098ad276c01f45a0e7d653a3491444d75351e4c981508c5f80aea478dc7b1a"
+    },
+    "3": {
+        "username": "cdDragos",
+        "email": "cd.dragos@yahoo.ro",
+        "password_hash": "pbkdf2:sha256:260000$Cenu1gYyZJQBElJo$287c274ebd98fdc8bed02fb73f6d986bc5daea192b8dac5b0f878814b7e13570"
+    }
+}

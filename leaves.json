@@ -1,0 +1,58 @@
+[
+    {
+        "user_id": 1,
+        "start_date": "2025-02-24",
+        "end_date": "2025-02-28",
+        "leave_type": "concediu",
+        "description": "Plecat la tara",
+        "status": "în așteptare"
+    },
+    {
+        "user_id": 1,
+        "start_date": "2025-02-24",
+        "end_date": "2025-02-27",
+        "leave_type": "delegatie",
+        "description": "Plecat la alta tara",
+        "status": "în așteptare"
+    },
+    {
+        "user_id": 1,
+        "start_date": "2025-02-28",
+        "end_date": "2025-03-05",
+        "leave_type": "concediu",
+        "description": "in vacanta sporita",
+        "status": "în așteptare"
+    },
+    {
+        "user_id": 1,
+        "start_date": "2025-03-06",
+        "end_date": "2025-03-09",
+        "leave_type": "concediu",
+        "description": "vancata cu vancata",
+        "status": "în așteptare"
+    },
+    {
+        "user_id": 1,
+        "start_date": "2025-03-06",
+        "end_date": "2025-03-12",
+        "leave_type": "concediu",
+        "description": "vdadas das dasd as",
+        "status": "în așteptare"
+    },
+    {
+        "user_id": 1,
+        "start_date": "2025-04-06",
+        "end_date": "2025-04-09",
+        "leave_type": "medical",
+        "description": "bolnav rau",
+        "status": "în așteptare"
+    },
+    {
+        "user_id": 1,
+        "start_date": "2025-04-18",
+        "end_date": "2025-04-22",
+        "leave_type": "concediu",
+        "description": "asa ceva",
+        "status": "în așteptare"
+    }
+]

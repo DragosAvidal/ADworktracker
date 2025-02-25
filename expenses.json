@@ -1,0 +1,22 @@
+[
+    {
+        "expense_id": "5bea3fdc-845a-4a58-bc58-44dad942e6aa",
+        "user_id": 1,
+        "date": "2025-02-06",
+        "project": "Proiect A",
+        "amount": 500.0,
+        "description": "etc etc",
+        "category": "materiale",
+        "status": "în așteptare"
+    },
+    {
+        "expense_id": "fd7c7ae1-6721-4638-bcc3-743bf77c7b62",
+        "user_id": 1,
+        "date": "2025-02-06",
+        "project": "Acelasi B",
+        "amount": 65.0,
+        "description": "nhfhhg",
+        "category": "cadouri",
+        "status": "în așteptare"
+    }
+]
